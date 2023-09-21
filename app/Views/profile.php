@@ -16,7 +16,7 @@
 </head>
 <body>
     <div class="profile">
-        <img src="<?=base_url('image.jpg');?>" style="width : 200px;">
+        <img src="<?=base_url('asset/img/image.jpg');?>" style="width : 200px;">
         <h1><?=$nama?></h1>
         <h1><?=$kelas?></h1>
         <h1><?=$npm?></h1>
