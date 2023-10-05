@@ -9,9 +9,21 @@ use App\Models\KelasModel;
 class UserController extends BaseController
 {
     protected $helpers=['form'];
+    public $userModel ;
+    public $kelasModel;
+
+    public function __construct(){
+        $this->userModel = new UserModel();
+        $this->kelasModel = new KelasModel();
+    }
+    
     public function index()
     {
-        //
+        $data = [
+            'title' => 'List User',
+            'users' => $this->userModel->getUser(),
+        ];
+        return view('list_user', $data);
     }
     public function profile($nama="", $kelas="",$npm=""){
         $data = [
@@ -23,32 +35,39 @@ class UserController extends BaseController
         return view('profile',$data);
     }
     public function create() {
-        $kelas = [
-            [
-                'id' =>1,
-                'nama_kelas' =>'A',
-            ],
-            [
-                'id' =>2,
-                'nama_kelas' =>'B',
-            ],
-            [
-                'id' =>3,
-                'nama_kelas' =>'C',
-            ],
-            [
-                'id'=>4,
-                'nama_kelas'=>'D'
-            ],
+
+        $kelas = $this->kelasModel->getKelas();
+
+        $data = [
+            'title' => 'Create User',
+            'kelas' => $kelas,
         ];
-        $data=[
-            'kelas'=>$kelas
-        ];
+        // $kelas = [
+        //     [
+        //         'id' =>1,
+        //         'nama_kelas' =>'A',
+        //     ],
+        //     [
+        //         'id' =>2,
+        //         'nama_kelas' =>'B',
+        //     ],
+        //     [
+        //         'id' =>3,
+        //         'nama_kelas' =>'C',
+        //     ],
+        //     [
+        //         'id'=>4,
+        //         'nama_kelas'=>'D'
+        //     ],
+        // ];
+        // $data=[
+        //     'kelas'=>$kelas
+        // ];
         return view('create_user',$data);
     }
     
     public function store(){
-        $kelasModel = new KelasModel();
+        $this->kelasModel = new KelasModel();
         if($this->request->getVar('kelas')!= ''){
             $kelas_select = $kelasModel->where('id', $this->request->getVar('kelas'))->first();
             $nama_kelas = $kelas_select['nama_kelas'];
@@ -56,7 +75,7 @@ class UserController extends BaseController
             $nama_kelas ='';
         }
 
-        $userModel = new UserModel();
+        $this->userModel = new UserModel();
         if (!$this->validate([
             'nama'  => 'required|is_unique[user.nama]',
             'npm'   => 'required|is_unique[user.npm]',
@@ -66,7 +85,7 @@ class UserController extends BaseController
             return redirect()->back()->withInput()->with('nama_kelas', $nama_kelas);
         }
 
-        $userModel->saveUser([
+        $this->userModel->saveUser([
             'nama' => $this->request->getVar('nama'), 
             'id_kelas' => $this->request->getVar('kelas'), 
             'npm' => $this->request->getVar('npm'),
@@ -76,7 +95,13 @@ class UserController extends BaseController
             'kelas' => $this->request->getVar('kelas'),
             'npm' => $this->request->getVar('npm'), 
         ];
-        return view('profile', $data);
+        return redirect()->to('/user');
+    }
+
+    
+
+    public function getUser(){
+        return $this->join('kelas', 'kelas.id=user.id_kelas')->findAll();
     }
 
 }
