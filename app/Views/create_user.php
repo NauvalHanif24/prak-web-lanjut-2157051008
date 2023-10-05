@@ -47,8 +47,16 @@ input[type="submit"]:hover {
 </style>
 </head>
 <body>
+<?php $nama_kelas = session()->getFlashdata('nama_kelas');?>
+
 <h2>Form Data Siswa</h2>
     <form action="<?= base_url('/user/store') ?>" method="post">
+    <?= (empty(validation_show_error('nama')))?'':'is_valid'?>
+<div class="invalid-feedback">
+    <?= validation_show_error('nama')?>
+  </div>
+  <?php $nama_kelas = session()->getFlashdata('nama_kelas');?>
+    <?= (empty(validation_show_error('nama')))?'':'is_valid'?>
         <label for="nama">Nama:</label>
         <input type="text" id="nama" name="nama" required><br><br>
 
@@ -56,7 +64,17 @@ input[type="submit"]:hover {
         <input type="text" id="npm" name="npm" required><br><br>
 
         <label for="kelas">Kelas:</label>
-        <input type="text" id="kelas" name="kelas" required><br><br>
+        <select name="kelas" id="kelas">
+          <?php
+          foreach ($kelas as $item) {
+            ?>
+            <option value="<?= $item['id'] ?>">
+              <?= $item['nama_kelas'] ?>
+          </option>
+          <?php
+          }
+          ?>
+          </select>
 
         <input type="submit" value="Submit">
     </form>
