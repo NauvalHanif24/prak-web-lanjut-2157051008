@@ -7,7 +7,7 @@
 <?php $nama_kelas = session()->getFlashdata('nama_kelas');?>
 
 <h2>Form Data Siswa</h2>
-    <form action="<?= base_url('/user/store') ?>" method="post">
+    <form action="<?= base_url('/user/store') ?>" method="post" enctype="multipart/form-data">
     <?= (empty(validation_show_error('nama')))?'':'is_valid'?>
 <div class="invalid-feedback">
     <?= validation_show_error('nama')?>
@@ -32,6 +32,8 @@
           }
           ?>
           </select>
+          <label for="foto">Foto:</label>
+          <input type="file"name="foto">
 
         <input type="submit" value="Submit">
     </form>

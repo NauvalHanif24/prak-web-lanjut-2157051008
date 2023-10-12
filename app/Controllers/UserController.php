@@ -67,15 +67,15 @@ class UserController extends BaseController
     }
     
     public function store(){
-        $this->kelasModel = new KelasModel();
+        // $this->kelasModel = new KelasModel();
         if($this->request->getVar('kelas')!= ''){
-            $kelas_select = $kelasModel->where('id', $this->request->getVar('kelas'))->first();
+            $kelas_select = $this->kelasModel->where('id', $this->request->getVar('kelas'))->first();
             $nama_kelas = $kelas_select['nama_kelas'];
         }else{
             $nama_kelas ='';
         }
 
-        $this->userModel = new UserModel();
+        // $this->userModel = new UserModel();
         if (!$this->validate([
             'nama'  => 'required|is_unique[user.nama]',
             'npm'   => 'required|is_unique[user.npm]',
@@ -84,11 +84,20 @@ class UserController extends BaseController
             session()->setFlashdata('nama_kelas');
             return redirect()->back()->withInput()->with('nama_kelas', $nama_kelas);
         }
+        $path = 'assets/uploads/img/';
 
+        $foto = $this->request->getFile('foto');
+
+        $name = $foto->getRandomName();
+
+        if ($foto->move($path, $name)) {
+            $foto = base_url($path . $name);
+         }   
         $this->userModel->saveUser([
             'nama' => $this->request->getVar('nama'), 
             'id_kelas' => $this->request->getVar('kelas'), 
             'npm' => $this->request->getVar('npm'),
+            'foto' => $foto
         ]);
         $data=[
             'nama' => $this->request->getVar('nama'),
@@ -97,11 +106,15 @@ class UserController extends BaseController
         ];
         return redirect()->to('/user');
     }
+    public function show($id) {
+        $user = $this->userModel->getUser($id);
 
-    
+        $data = [
+            'title' => 'profile',
+            'user' => $user,
+        ];
 
-    public function getUser(){
-        return $this->join('kelas', 'kelas.id=user.id_kelas')->findAll();
+        return view('profile', $data);
     }
-
+    
 }
