@@ -4,10 +4,10 @@
 
 <div>
     <div class="profile">
-        <img src="<?=base_url('asset/img/image.jpg');?>" style="width : 200px;">
-        <h1><?=$nama?></h1>
-        <h1><?=$kelas?></h1>
-        <h1><?=$npm?></h1>
+        <img src="<?=$user['foto'] ?? '<default-foto>'  ?>" style="width : 200px;">
+        <h1><?=$user['nama']?></h1>
+        <h1><?=$user['id_kelas']?></h1>
+        <h1><?=$user['npm']?></h1>
     </div>
 </div>
   <?=$this->endSection()?>
